@@ -12,9 +12,7 @@ class PostsViewController : UIViewController, UITableViewDataSource, UITableView
     var postsLabel: UILabel!
     var postsTableView: UITableView!
     
-    var postList : [Post] = []
-    
-    var networkManager = NetworkManager.shared
+    let postViewModel = PostViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,17 +20,10 @@ class PostsViewController : UIViewController, UITableViewDataSource, UITableView
         setupUI()
         setupTableView()
         
-        getDataFromServer { [weak self] in
+        postViewModel.getDataFromServer { [weak self] in
             DispatchQueue.main.async {
                 self?.postsTableView.reloadData()
             }
-        }
-    }
-    
-    func getDataFromServer(closure: @escaping (() -> Void)) {
-        networkManager.getData(from: Server.endPoint.rawValue) { [weak self] fetchedPosts in
-            self?.postList = fetchedPosts
-            closure()
         }
     }
     
@@ -69,14 +60,14 @@ class PostsViewController : UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postList.count
+        return postViewModel.numberOfRows()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as? PostsTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: postList[indexPath.row])
+        cell.configure(with: postViewModel.getPost(at: indexPath.row))
         return cell
     }
 }
