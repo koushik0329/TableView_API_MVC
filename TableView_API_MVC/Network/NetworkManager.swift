@@ -17,7 +17,6 @@ class NetworkManager: Network {
     func getData(from serverUrl: String, closure: @escaping ([Post]) -> Void) {
         guard let serverURL = URL(string: serverUrl) else {
             print("Server URL is invalid")
-            closure([])
             return
         }
         
@@ -25,13 +24,11 @@ class NetworkManager: Network {
             
             if let error = error {
                 print("Error fetching data: \(error)")
-                closure([])
                 return
             }
             
             guard let data = data else {
                 print("No data returned from the server")
-                closure([])
                 return
             }
             
@@ -40,7 +37,6 @@ class NetworkManager: Network {
                 closure(posts)
             } catch {
                 print("Error parsing JSON: \(error)")
-                closure([])
             }
         }.resume()
     }

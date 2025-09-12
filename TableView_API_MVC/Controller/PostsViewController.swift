@@ -20,11 +20,18 @@ class PostsViewController : UIViewController, UITableViewDataSource, UITableView
         setupUI()
         setupTableView()
         
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Go Back", style: .plain, target: self, action: #selector(handleBackButton))
+        
         postViewModel.getDataFromServer { [weak self] in
             DispatchQueue.main.async {
                 self?.postsTableView.reloadData()
             }
         }
+    }
+    
+    @objc func handleBackButton () {
+        navigationController?.popViewController(animated: true)
+        
     }
     
     func setupUI() {
